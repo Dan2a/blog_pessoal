@@ -15,7 +15,7 @@ export class PostagemController{
 
     @Get('/:id')
     @HttpCode(HttpStatus.OK)
-    findById(@Param('id', ParseIntPipe) id: number): Promise<Postagem>{
+    findById(@Param('id', ParseIntPipe) id: number): Promise<Postagem>{ // @Param é para pegar o parametro da URL
         return this.postagemService.findById(id)
     }
 
@@ -27,7 +27,7 @@ export class PostagemController{
 
     @Post()
     @HttpCode(HttpStatus.CREATED)
-    create(@Body() postagem: Postagem): Promise<Postagem>{
+    create(@Body() postagem: Postagem): Promise<Postagem>{ // Pega informações do corpo da requisição
         return this.postagemService.create(postagem);
     }
 
