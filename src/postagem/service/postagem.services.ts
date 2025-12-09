@@ -9,50 +9,53 @@ export class PostagemService {
     constructor(
         @InjectRepository(Postagem) // Pode chamar os metodos de uma classe Repository 'INVERSÃO DE DEPENDENCIA'
         private postagemRepository: Repository<Postagem>,
-        private temaService:TemaService
+        private temaService: TemaService
     ) { }
 
     // Função espera "await" até que tenha um retorno.
-    async findAll (): Promise<Postagem[]>{ // Promise => promessa Toda função assincrona retorna uma promessa que deu certou ou errado.
-        return  await this.postagemRepository.find({
-            relations:{
-                tema: true
+    async findAll(): Promise<Postagem[]> { // Promise => promessa Toda função assincrona retorna uma promessa que deu certou ou errado.
+        return await this.postagemRepository.find({
+            relations: {
+                tema: true,
+                usuario: true
             }
         });
-    } 
+    }
 
     // Metodo de procurar por ID
-    async findById (id: number): Promise<Postagem>{
+    async findById(id: number): Promise<Postagem> {
         const postagem = await this.postagemRepository.findOne({
-            where:{
+            where: {
                 id
             },
-            relations:{
-                tema: true
+            relations: {
+                tema: true,
+                usuario: true
             }
         })
 
-        if(!postagem)
+        if (!postagem)
             throw new HttpException('Postagem não encontrada', HttpStatus.NOT_FOUND);
 
         return postagem;
     }
 
     // Buscar pelo nome do titulo
-    async findAllByTitulo(titulo: string): Promise<Postagem[]>{
+    async findAllByTitulo(titulo: string): Promise<Postagem[]> {
         return await this.postagemRepository.find({
-            where:{
+            where: {
                 titulo: ILike(`%${titulo}%`)
             },
-            relations:{
-                tema: true
+            relations: {
+                tema: true,
+                usuario: true
             }
         })
     }
 
     // Cadastrar postagem
     async create(postagem: Postagem): Promise<Postagem> {
-        if (postagem.tema){
+        if (postagem.tema) {
             let tema = await this.temaService.findById(postagem.tema.id)
             if (!tema)
                 throw new HttpException('Tema não encontrado!', HttpStatus.NOT_FOUND);
@@ -64,10 +67,10 @@ export class PostagemService {
     // Atualizar postagem
     async update(postagem: Postagem): Promise<Postagem> {
         let buscaPostagem: Postagem = await this.findById(postagem.id);
-        if (!buscaPostagem){
+        if (!buscaPostagem) {
             throw new HttpException('Postagem não encontrada!', HttpStatus.NOT_FOUND);
         }
-        if (postagem.tema){
+        if (postagem.tema) {
             let tema = await this.temaService.findById(postagem.tema.id)
             if (!tema)
                 throw new HttpException('Tema não encontrado!', HttpStatus.NOT_FOUND);
@@ -77,7 +80,7 @@ export class PostagemService {
     }
 
     // Deletar Postagem
-    async delete(id: number): Promise<DeleteResult>{
+    async delete(id: number): Promise<DeleteResult> {
         await this.findById(id);
         return await this.postagemRepository.delete(id);
     }
