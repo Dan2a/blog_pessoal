@@ -21,7 +21,7 @@ export class AuthService {
         }
 
         // Faz a comparação entre a senha criptografada no banco com a que está vindo pela requisição
-        const validaSenha = await this.bcrypt.compararSenhas(buscaUsuario.senha, password)
+        const validaSenha = await this.bcrypt.compararSenhas(password, buscaUsuario.senha)
 
         // Se as info estiverem corretas, entra no IF
         if (buscaUsuario && validaSenha) {
